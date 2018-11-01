@@ -23,7 +23,7 @@
 </script>
 	<br>
 
-<form action="login.form" method="post"  style="text-align:center">
+<form action="login.action" method="post"  style="text-align:center">
 	username:<input type="text" name="name" ><br/>
 	<br>
 	password:<input type="text" name="pwd"><br>

@@ -30,7 +30,11 @@
 <property name="hbm2ddl.auto">update</property>
 
 <!-- 指定关联的 .hbm.xml 文件 -->
-<mapping resource="entity/user1.hbm.xml"/>
-<mapping resource="entity/user2.hbm.xml"/>
+<mapping resource="entity/ininterface.hbm.xml"/>
+<mapping resource="entity/inplan.hbm.xml"/>
+<mapping resource="entity/inplug.hbm.xml"/>
+<mapping resource="entity/plan.hbm.xml"/>
+<mapping resource="entity/plug.hbm.xml"/>
+<mapping resource="entity/sysurl.hbm.xml"/>
 </session-factory>
 </hibernate-configuration>

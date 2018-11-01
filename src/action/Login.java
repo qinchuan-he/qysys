@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class Login {
 	
-	@RequestMapping(value="/login.form",method=RequestMethod.POST)
+	@RequestMapping(value="/jsp/login.action",method=RequestMethod.POST)
 	public String execute(HttpServletRequest req,ModelMap model){
 		System.out.println("----------------");
 		return "main";

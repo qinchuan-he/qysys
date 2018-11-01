@@ -24,7 +24,7 @@
 	<mvc:annotation-driven/><!-- 支持映射的注解@RequestMapping("/hello.form")注解 -->
 	<context:component-scan base-package="action"/><!-- 支持控制器注解@Controller和@Component，这里需要写入控制器class的包名  -->
     <context:component-scan base-package="entity"/>
-    <context:component-scan base-package="serviceImpl"/>
+    <context:component-scan base-package="serviceimpl"/>
     
     <!-- 定义请求处理映射 handlerMapping -->
     
@@ -46,7 +46,7 @@
     </bean>
      <!-- 配置返回视图 -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    	<property name="prefix" value="/"/>
+    	<property name="prefix" value="/jsp/"/>
     	<property name="suffix" value=".jsp"/>
     </bean>
          <!-- 添加sessionFactory bane ，注意，该类是Spring提供的 -->

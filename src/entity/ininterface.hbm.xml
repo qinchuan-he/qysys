@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-11-1 11:32:42 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="entity.ininterface" table="ININTERFACE">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="inname" type="java.lang.String">
+            <column name="INNAME" />
+        </property>
+        <property name="url" type="java.lang.String">
+            <column name="URL" />
+        </property>
+        <property name="method" type="java.lang.String">
+            <column name="METHOD" />
+        </property>
+        <property name="des" type="java.lang.String">
+            <column name="DES" />
+        </property>
+        <property name="param" type="java.lang.String">
+            <column name="PARAM" />
+        </property>
+        <property name="checker" type="java.lang.String">
+            <column name="CHECKER" />
+        </property>
+        <property name="createid" type="int">
+            <column name="CREATEID" />
+        </property>
+        <property name="createtime" type="java.sql.Timestamp">
+            <column name="CREATETIME" />
+        </property>
+        <property name="updatetime" type="java.sql.Timestamp">
+            <column name="UPDATETIME" />
+        </property>
+        <property name="sysid" type="int">
+            <column name="SYSID" />
+        </property>
+    </class>
+</hibernate-mapping>
