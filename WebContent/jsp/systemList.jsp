@@ -37,6 +37,20 @@
 	
 	<script type="text/javascript">
 		function search(){
+		var v=$("#sysname");
+		var jso={"name":v};
+		$.ajax({
+			type: "post",
+			dataType: "json",
+			URL: "selectName.action",
+			data: JSON.stringify(jso),
+			contentType: "application/json; charset=utf-8",
+			success: function(obj){
+			
+			}
+			
+		});
+		
 		
 		}
 		

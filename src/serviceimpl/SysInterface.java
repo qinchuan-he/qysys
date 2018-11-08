@@ -95,6 +95,20 @@ public class SysInterface implements Sys{
 		return "删除成功";
 	}
 
+	@Override
+	public List<sysurl> selectNameList(String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from sysurl where systemname like'%?%'";
+		NativeQuery<sysurl> query=session.createNativeQuery(str, sysurl.class);
+		query.setParameter(1, name);
+		List<sysurl> list=query.getResultList();
+		tr.commit();
+		session.close();
+		return list;
+	}
+
 
 
 }

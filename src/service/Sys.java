@@ -15,4 +15,5 @@ public interface Sys {
 	public String addSys(sysurl sys);//新增接口，传入一个对象
 	public String modifySys(sysurl sys);//修改接口，传入对象
 	public String deleteSys(int id);//删除接口，传入id
+	public List<sysurl> selectNameList(String name);//根据名字查询，异步查询
 }

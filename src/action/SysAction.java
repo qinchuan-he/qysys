@@ -87,5 +87,20 @@ public class SysAction {
 		System.out.println(result+id);
 		return "redirect:/jsp/systemList.action";
 	}
+	//根据名字模糊查询
+	@RequestMapping(value="/jsp/selectName.action",method=RequestMethod.POST)
+	public String selectName(HttpServletRequest req,ModelMap model){
+		String n=req.getParameter("name");
+		if(n==null||n.equals("")){
+			System.out.println("查询环境：为空");
+			List<sysurl> list=sysInterface.sysList();
+			model.addAttribute("syslist", list);
+		}else{
+			System.out.println("查询环境："+n);
+			List<sysurl> list=sysInterface.selectNameList(n);
+			model.addAttribute("syslist", list);
+		}	
+		return "systemList";
+	}
 
 }
