@@ -68,15 +68,13 @@ public class SysInterface implements Sys{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="update sysurl s set s.systemname=?,s.urlname=?,s.createid=?,s.createtime=?,s.updatetime=?,s.des=? where s.id=?";
+		String str="update sysurl s set s.systemname=?,s.urlname=?,s.updatetime=?,s.des=? where s.id=?";
 		NativeQuery<sysurl> query=session.createNativeQuery(str, sysurl.class);
 		query.setParameter(1, sys.getSystemname())
 			 .setParameter(2, sys.getUrlname())
-			 .setParameter(3, sys.getCreateid())
-			 .setParameter(4, sys.getCreatetime())
-			 .setParameter(5, sys.getUpdatetime())
-			 .setParameter(6, sys.getDes())
-			 .setParameter(7, sys.getId());
+			 .setParameter(3, sys.getUpdatetime())
+			 .setParameter(4, sys.getDes())
+			 .setParameter(5, sys.getId());
 		query.executeUpdate();
 		tr.commit();
 		session.close();

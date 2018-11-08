@@ -15,16 +15,19 @@
 </head>
 <body>
 	<button onclick="goback()">返回</button>
-	<form action="addsys.action" method="post" style="text-align: center;">
-			环境名称：<input type="text" name="sysname"/>
-			域名：<input type="text" name="url" placeholder ="有端口带端口"/>
-			描述：<input type="text" name="des"/><br>
-			<input type="submit" value="保存">
+	<form action="modifysys.action" method="post" style="text-align: center;">
+		<c:forEach items="${list }" var="sys">
+			<input type="hidden" name="id" value="${sys.id }" >
+			环境名称：<input type="text" name="sysname" value="${sys.systemname }"/>
+			域名：<input type="text" name="url" value="${sys.urlname }"/>
+			描述：<input type="text" name="des" value="${sys.des }"/><br>
+			</c:forEach>
+			<input type="reset" value="重置"> <input type="submit" value="保存">
 	</form>
 <script type="text/javascript">
 	function goback(){
 		window.history.go(-1);
 	}
-</script>	
+</script>
 </body>
 </html>

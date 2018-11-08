@@ -15,7 +15,8 @@
 		<div style="text-align: center;">
 			输入环境名：<input id="sysname" type="text" name="name">
 			<button onclick="search()">查询</button>
-			<button onclick="addsys()">新增</button>
+			<a href="addSystem.jsp"><button>新增</button></a>
+			
 		</div>
 		<div style="text-align: center;">
 			<table border="1px" width="80%">
@@ -24,7 +25,9 @@
 				</tr>
 				<c:forEach items="${syslist }" var="sys">
 				<tr>
-					<td>${sys.systemname }</td><td>${sys.urlname }</td><td>${sys.updatetime }</td><td>${sys.des }</td><td>修改</td>
+					<td>${sys.systemname }</td><td>${sys.urlname }</td><td>${sys.updatetime }</td><td>${sys.des }</td>
+					<td><a href="modify_sys.action?id=${sys.id }">修改</a>
+					&nbsp;<a href="delete_sys.action?id=${sys.id }">删除</a></td>
 					</tr>
 				</c:forEach>
 				
@@ -36,6 +39,9 @@
 		function search(){
 		
 		}
+		
+
+		
 	</script>
 </body>
 </html>
