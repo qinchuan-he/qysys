@@ -2,16 +2,25 @@ package action;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.Model;
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import serviceimpl.SysInterface;
 import entity.sysurl;
@@ -49,6 +58,7 @@ public class SysAction {
 		sys.setCreatetime(dt);
 		sys.setUpdatetime(dt);
 		String re=sysInterface.addSys(sys);
+		//model.addAttribute("result", re);
 		System.out.println(re+req.getParameter("sysname"));
 		return "redirect:/jsp/systemList.action";
 	}
@@ -85,22 +95,34 @@ public class SysAction {
 		int id=Integer.parseInt(str);
 		String result=sysInterface.deleteSys(id);
 		System.out.println(result+id);
+		//model.addAttribute(result);
 		return "redirect:/jsp/systemList.action";
 	}
-	//根据名字模糊查询
+	//根据名字模糊查询,增加注解@ResponseBody，表示响应直接写入body，异步请求
+	@ResponseBody
 	@RequestMapping(value="/jsp/selectName.action",method=RequestMethod.POST)
-	public String selectName(HttpServletRequest req,ModelMap model){
-		String n=req.getParameter("name");
+	public List<sysurl> selectName(@RequestBody JSONObject name){
+		System.out.println("进入环境查询");
+//		String n=req.getParameter("name");
+		String n=name.getString("name");
+//		System.out.println(name);
+		System.out.println(n);
 		if(n==null||n.equals("")){
 			System.out.println("查询环境：为空");
 			List<sysurl> list=sysInterface.sysList();
-			model.addAttribute("syslist", list);
+			JSON js=JSONArray.fromObject(list);
+			System.out.println(list);
+			System.out.println(js);
+			return list;
 		}else{
 			System.out.println("查询环境："+n);
 			List<sysurl> list=sysInterface.selectNameList(n);
-			model.addAttribute("syslist", list);
-		}	
-		return "systemList";
+//			model.addAttribute("syslist", list);
+			//return sys;
+			return list;	
+		}
+		
+		
 	}
 
 }

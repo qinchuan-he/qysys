@@ -86,7 +86,7 @@ public class SysInterface implements Sys{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="delete from sysurl s where s.id=?";
+		String str="delete from sysurl where id=?";
 		NativeQuery<sysurl> query=session.createNativeQuery(str, sysurl.class);
 		query.setParameter(1, id);
 		query.executeUpdate();
@@ -98,14 +98,16 @@ public class SysInterface implements Sys{
 	@Override
 	public List<sysurl> selectNameList(String name) {
 		// TODO Auto-generated method stub
+		System.out.println("--------------------"+name);
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="select * from sysurl where systemname like'%?%'";
+		String str="select * from sysurl s where s.systemname like ?";
 		NativeQuery<sysurl> query=session.createNativeQuery(str, sysurl.class);
-		query.setParameter(1, name);
+		query.setParameter(1, "%"+name+"%");
 		List<sysurl> list=query.getResultList();
 		tr.commit();
 		session.close();
+		System.out.println(list);
 		return list;
 	}
 

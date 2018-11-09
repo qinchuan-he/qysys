@@ -8,7 +8,7 @@
         xmlns:tx="http://www.springframework.org/schema/tx"
         xmlns:jpa="http://www.springframework.org/schema/data/jpa"
         xmlns:util="http://www.springframework.org/schema/util"
-        xmlns:mvc="http://www.springframework.org/schema/mvc"       
+        xmlns:mvc="http://www.springframework.org/schema/mvc"      
         xsi:schemaLocation="
             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
             http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/tx/spring-jdbc-4.2.xsd
@@ -20,12 +20,11 @@
             http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
             http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-4.2.xsd">
     <!-- 类似于财务部门一样，类就是钱，所有需要类的实例都由srping去管理，scope="prototype"表示每次调用新建一个实例 -->
-	<context:annotation-config/><!-- 支持自动装配的注解 @Autowired和@Resource(name="beanid")注解-->
-	<mvc:annotation-driven/><!-- 支持映射的注解@RequestMapping("/hello.form")注解 -->
+	<context:annotation-config/><!-- 支持自动装配的注解 @Autowired和@Resource(name="beanid")注解-->    
 	<context:component-scan base-package="action"/><!-- 支持控制器注解@Controller和@Component，这里需要写入控制器class的包名  -->
     <context:component-scan base-package="entity"/>
-    <context:component-scan base-package="serviceimpl"/>
-    
+    <context:component-scan base-package="serviceimpl"/>	
+	<mvc:annotation-driven/><!-- 支持映射的注解@RequestMapping("/hello.form")注解 -->
     <!-- 定义请求处理映射 handlerMapping -->
     
     <!-- 
@@ -54,6 +53,7 @@
         <!-- 注入Hibernate 配置文件路径,前面要加上  classpath:-->
         <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
     </bean>
+	
     <!-- 这里使用了component注解来定义bean
         <bean id="test" class="action.Test1" scope="prototype" >
     </bean>    
@@ -69,4 +69,40 @@
      		  <bean id="user" class="entity.user1" scope="prototype" >
     </bean>--> 
     
+    
+    <!--spring4中返回json串的配置方式-->
+    <!--  
+    <bean
+        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>-->
+    <!--配置jackson的bean，这里使用的spring4中的配置
+    <bean id="jsonHttpMessageConverter"
+        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+    
+    -->
+    <!-- 返回json字符串新增的配置 -->
+        <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJackson2HttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+    <bean id="mappingJackson2HttpMessageConverter" 
+    		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+            	<value>application/json;charset=UTF-8</value>
+                <value>text/html;charset=UTF-8</value>
+                <value>text/json;charset=UTF-8</value>    
+            </list>
+        </property>
+     </bean>
+     
+
 </beans>

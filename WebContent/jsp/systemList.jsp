@@ -37,18 +37,29 @@
 	
 	<script type="text/javascript">
 		function search(){
-		var v=$("#sysname");
+		var v=$("#sysname").val();
 		var jso={"name":v};
+		var s=JSON.stringify(jso);
+		//alert(v);
 		$.ajax({
 			type: "post",
 			dataType: "json",
-			URL: "selectName.action",
-			data: JSON.stringify(jso),
+			url: "selectName.action",
+			data: s,
 			contentType: "application/json; charset=utf-8",
 			success: function(obj){
-			
-			}
-			
+			$("#one~tr").remove();
+			//alert(obj);
+			for(var i in obj){
+				$("#one").after("<tr><td>"+obj[i].systemname+"</td>"+
+				"<td>"+obj[i].urlname+"</td>"+
+				"<td>"+obj[i].updatetime+"</td>"+
+				"<td>"+obj[i].des+"</td>"+
+					"<td><a href="+"modify_sys.action?id="+obj[i].id+">修改</a>"+
+					"&nbsp;"+"<a href="+"delete_sys.action?id="+obj[i].id+">删除</a></td></tr>");
+				
+			}	
+			}			
 		});
 		
 		
