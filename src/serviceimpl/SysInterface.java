@@ -51,13 +51,13 @@ public class SysInterface implements Sys{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		s.setSystemname(sys.getSystemname());
-		s.setUrlname(sys.getUrlname());
-		s.setCreateid(sys.getCreateid());
-		s.setCreatetime(sys.getCreatetime());
-		s.setUpdatetime(sys.getUpdatetime());
-		s.setDes(sys.getDes());
-		session.save(s);
+//		s.setSystemname(sys.getSystemname());
+//		s.setUrlname(sys.getUrlname());
+//		s.setCreateid(sys.getCreateid());
+//		s.setCreatetime(sys.getCreatetime());
+//		s.setUpdatetime(sys.getUpdatetime());
+//		s.setDes(sys.getDes());
+		session.save(sys);
 		tr.commit();
 		session.close();
 		return "新增完成";
@@ -108,6 +108,20 @@ public class SysInterface implements Sys{
 		tr.commit();
 		session.close();
 		System.out.println(list);
+		return list;
+	}
+
+	@Override
+	public List<sysurl> selectNotIdList(int id) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from sysurl s where s.id not in(select s1.id from ininterface i,sysurl s1 where i.sysid=s1.id and i.id=?)";
+		NativeQuery<sysurl> query=session.createNativeQuery(str, sysurl.class);
+		query.setParameter(1, id);
+		List<sysurl> list=query.getResultList();
+		tr.commit();
+		session.close();
 		return list;
 	}
 
