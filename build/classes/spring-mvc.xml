@@ -85,7 +85,7 @@
         class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
     
     -->
-    <!-- 返回json字符串新增的配置 -->
+    <!-- 返回json字符串新增的配置 --><!-- 可能是异步请求的返回-2018-11-20回顾 -->
         <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <list>

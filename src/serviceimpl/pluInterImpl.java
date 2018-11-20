@@ -38,7 +38,7 @@ public class pluInterImpl implements plugInter{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="select * from plug where plname like ?";
+		String str="select * from plug p where p.plname like ?";
 		NativeQuery<plug> query=session.createNativeQuery(str, plug.class);
 		query.setParameter(1, "%"+name+"%");
 		List<plug> list=query.getResultList();

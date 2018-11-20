@@ -150,7 +150,7 @@
 		}else if(v=="Interface1"){// 接口页
 			$("#iframe2").attr("src","interfacelist.action");
 		}else if(v=="plug1"){// 组件页
-			$("#iframe2").attr("src",".plugList.action");
+			$("#iframe2").attr("src","plugList.action");
 		}else if(v=="plan1"){ // j计划页
 			$("#iframe2").attr("src","planList.action");
 		}else if(v=="addSystem"){
