@@ -22,8 +22,10 @@ public interface plugInter {
 	public String modifyPlug(plug p); //修改组件
 	public String deletePlug(int id); //删除组件
 	public List<ininterface> selectInter(String name,int id); //组件查询接口用,新增使用
+	public boolean checkExistInter(int pld,int inid);//检查接口是否已存在组建中
 	public String addPlugInter(List<inplug> list); //组件添加接口用,传入一组处理好的对象，批量插入
-	public String deletePlugInter(int id); //组件删除接口用，单个删除	 
+	public String addPlugSingleInter(inplug p);//组件添加接口用,传入单一对象
+	public String deletePlugInter(int pid,int inid); //组件删除接口用，单个删除，传入接口id和组件id	 
 	
 	
 

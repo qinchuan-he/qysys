@@ -66,7 +66,7 @@ public class pluInterImpl implements plugInter{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="select f.* from inplug p,ininterface f where p.inid=f.id and p.plid=?";
+		String str="select f.* from inplug p,ininterface f where p.inid=f.id and p.pid=?";
 		NativeQuery<ininterface> query=session.createNativeQuery(str, ininterface.class);
 		query.setParameter(1, id);
 		List<ininterface> list=query.getResultList();
@@ -122,7 +122,7 @@ public class pluInterImpl implements plugInter{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="select * from ininterface where id not in(select f.id from inplug p,ininterface f where p.inid=f.id and p.plid=?) and inname like ? ";
+		String str="select * from ininterface where id not in(select f.id from inplug p,ininterface f where p.inid=f.id and p.pid=?) and inname like ? ";
 		NativeQuery<ininterface> query=session.createNativeQuery(str, ininterface.class);
 		query.setParameter(1, id)
 				.setParameter(2, "%"+name+"%");
@@ -148,17 +148,50 @@ public class pluInterImpl implements plugInter{
 	}
 
 	@Override
-	public String deletePlugInter(int id) {
+	public String deletePlugInter(int pid,int inid) {
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="delete from inplug where inid=?";
+		String str="delete from inplug where pid=? and inid=?";
 		NativeQuery<inplug> query=session.createNativeQuery(str,inplug.class);
-		query.setParameter(1, id);
+		query.setParameter(1, pid)
+				.setParameter(2, inid);
 		query.executeUpdate();
 		tr.commit();
 		session.close();
-		return null;
+		return "删除成功";
+	}
+
+	@Override
+	public String addPlugSingleInter(inplug p) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		session.save(p);
+		tr.commit();
+		session.close();
+		return "添加接口成功";
+	}
+
+	@Override
+	public boolean checkExistInter(int pld, int inid) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from inplug where pid=? and inid=?";
+		NativeQuery<inplug> query=session.createNativeQuery(str, inplug.class);
+		query.setParameter(1, pld)
+				.setParameter(2, inid);
+		List<inplug> list=query.getResultList();
+		tr.commit();
+		session.close();
+		System.out.println(list+"---------------------------");
+		System.out.println("list.size())------------------"+list.size());
+		if(list.size()==0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 }

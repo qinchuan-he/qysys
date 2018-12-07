@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-11-30 16:56:39 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="entity.responsedetail" table="RESPONSEDETAIL">
+        <id name="id" type="int">
+            <column name="ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="pid" type="int">
+            <column name="PID" />
+        </property>
+        <property name="apiid" type="int">
+            <column name="APIID" />
+        </property>
+        <property name="method" type="java.lang.String">
+            <column name="METHOD" />
+        </property>
+        <property name="result" type="int">
+            <column name="RESULT" />
+        </property>
+        <property name="responsedata" type="java.lang.String">
+            <column name="RESPONSEDATA" />
+        </property>
+        <property name="num" type="int">
+            <column name="NUM" />
+        </property>
+        <property name="exetime" type="java.util.Date">
+            <column name="EXETIME" />
+        </property>
+        <property name="exenum" type="int">
+            <column name="EXENUM" />
+        </property>
+    </class>
+</hibernate-mapping>

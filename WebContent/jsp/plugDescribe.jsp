@@ -26,10 +26,10 @@
 	<div style="text-align: center;">
 					<input id="plid" type="hidden" value="${plug[0].id }">
 		输入接口名称：<input id="search" type="text">&emsp;<button onclick="searchOtherInter()">查询</button>&emsp;
-					<button onclick="searchPlugInter()">显示组件内接口</button>
+					<button  id="${plug[0].id }" onclick="searchPlugInter(this.id)">显示组件内接口</button>
 	</div>
 	<div>
-		<table border="1px" width="80%">
+		<table id="tab" border="1px" width="80%">
 			<tr id="one"><td>接口名称</td><td>请求地址</td><td>请求类型</td><td>接口描述</td><td>操作</td></tr>
 			<c:forEach items="${plinlist }" var="list">
 				<tr><td>${list.inname }</td><td>${list.url }</td><td>${list.method }</td><td>${list.des }</td><td>
@@ -55,30 +55,45 @@
 				dataType: "json",
 				data: {"id":id,"name":name},
 				success:function(obj){
-					$("#one~tr").move();
+					$("#one~tr").remove();
 					for(var i in obj){
-						$("#one").after("<tr><td>"+obj[i].inname+"</td><td>"
+						$("#tab").append("<tr><td>"+obj[i].inname+"</td><td>"
 						+obj[i].url+"</td><td>"
 						+obj[i].method+"</td><td>"
 						+obj[i].des+"</td><td>"
-						+"<button id="+obj[i].id+" onclick="+"addPlugInter(this)"+">增加</button>"
+						+"<button id="+obj[i].id+" onclick="+"addPlugInter(this.id)"+">增加</button>"
 						+"</td></tr>");
 					}
 				}
 			});
 		}
 		
-		function searchPlugInter(){
-			var  id=$("#plid").val();
+		function addPlugInter(inid){
+			var pid=$("#plid").attr("value");
+			$.ajax({
+				url: "plugAddInter.action",
+				type: "post",
+				dataType: "json",
+				data: {"pid":pid,"inid":inid},
+				success:function(obj){
+					var s=JSON.stringify(obj);
+					alert(s);
+				}				
+			});
+		}
+		
+		function searchPlugInter(pid){
+			//var  id=$("#plid").val();
 			$.ajax({
 				url: "searchPlugInter.action",
 				type: "post",
+				//async: false,
 				dataType: "json",
-				data: {"id":id},
+				data: {"id":pid},
 				success:function(obj){
-				$("#one~tr").move();
+				$("#one~tr").remove();
 					for(var i in obj){
-						$("#one").after("<tr><td>"+obj[i].inname+"</td><td>"
+						$("#tab").append("<tr><td>"+obj[i].inname+"</td><td>"
 						+obj[i].url+"</td><td>"
 						+obj[i].method+"</td><td>"
 						+obj[i].des+"</td><td>"
@@ -87,10 +102,28 @@
 					}
 				}
 			});
-			
+		}
+		
+		
+		function deletePlugInter(obj){
+			var pid=$("#plid").attr("value");
+			var inid=$(obj).attr("id");
+			//alert(inid);
+			$.ajax({
+				url: "deletePlugInter.action",
+				type: "post",
+				dataType: "json",
+				data: {"pid":pid,"inid":inid},
+				success:function(data){
+					var result=JSON.stringify(data);
+					alert(result);
+					$(obj).parent().parent().remove();
+				}
+			});
 			
 		}
 		
+
 		
 </script>
 </body>

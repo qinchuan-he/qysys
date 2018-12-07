@@ -2,10 +2,15 @@ package action;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.jr.ob.JSON;
+
 import serviceimpl.pluInterImpl;
 import entity.ininterface;
+import entity.inplug;
 import entity.plug;
 
 /**
@@ -28,6 +36,8 @@ public class plugAction {
 	private plug pl;
 	@Resource(name="pluginterimpl")
 	private pluInterImpl plugimpl;
+	@Resource(name="inplug")
+	private inplug inpl;
 	
 	//进入组件页
 	@RequestMapping(value="/jsp/plugList.action",method=RequestMethod.GET) //进入界面，查询全局
@@ -91,7 +101,7 @@ public class plugAction {
 	}
 	
 	//查看组件详情，就是看组件下的接口
-	
+	@RequestMapping(value="/jsp/describeplug.action",method=RequestMethod.GET)
 	public String plugDescribe(HttpServletRequest req,ModelMap model){
 		int id=Integer.parseInt(req.getParameter("id"));
 		List<plug> plist=plugimpl.selectPlugId(id);
@@ -100,5 +110,64 @@ public class plugAction {
 		model.addAttribute("plinlist", inlist);
 		return "plugDescribe";
 	}
+	
+	//组件内查询，模糊匹配名字，范围全库不包含已关联接口
+	@ResponseBody
+	@RequestMapping(value="/jsp/searchOtherInter.action",method=RequestMethod.POST)
+	public List<ininterface> selectOtherInter(HttpServletRequest req,ModelMap model){
+		String name=req.getParameter("name");
+		int id=Integer.parseInt(req.getParameter("id"));
+		List<ininterface> list=plugimpl.selectInter(name, id);
+		return list;
+	}
+	
+	//查询组件所包含的接口，异步查询，传入id
+	@ResponseBody
+	@RequestMapping(value="/jsp/searchPlugInter.action",method=RequestMethod.POST)
+	public List<ininterface> selectPlugAsy(HttpServletRequest req,ModelMap model){
+		int id=Integer.parseInt(req.getParameter("id"));
+		List<ininterface> list=plugimpl.selectInterPlug(id);		
+		return list;
+	}
+	
+	//组件增加接口,增加之后还是在查询结果界面
+	@ResponseBody
+	@RequestMapping(value="/jsp/plugAddInter.action",method=RequestMethod.POST)
+	public JSONObject plugAddInter(HttpServletRequest req,ModelMap model){
+		int pid=Integer.parseInt(req.getParameter("pid"));
+		int inid=Integer.parseInt(req.getParameter("inid"));
+		boolean b=plugimpl.checkExistInter(pid, inid);
+		if(b){
+			inpl.setPid(pid);
+			inpl.setInid(inid);
+			String str=plugimpl.addPlugSingleInter(inpl);
+			System.out.println(str);
+			Map<String, String> map=new HashMap<String, String>();
+			map.put("result", str);
+			JSONObject json=JSONObject.fromObject(map);
+			return json;
+		}else{
+			String str="已经在组件中";
+			Map<String, String> map=new HashMap<String, String>();
+			map.put("result", str);
+			JSONObject json=JSONObject.fromObject(map);
+			return json;
+		}
+	}
+	
+	//组件删除接口，删除之后还是在原页面
+	@ResponseBody
+	@RequestMapping(value="/jsp/deletePlugInter.action",method=RequestMethod.POST)
+	public JSONObject deletePlugInter(HttpServletRequest req,ModelMap model){
+		int pid=Integer.parseInt(req.getParameter("pid"));
+		int inid=Integer.parseInt(req.getParameter("inid"));
+		String str=plugimpl.deletePlugInter(pid, inid);
+		System.out.println(str);
+		Map<String, String> map=new HashMap<String, String>();
+		map.put("RESULT", str);
+		JSONObject json=JSONObject.fromObject(map);
+		return json;
+	}
+	
 
 }

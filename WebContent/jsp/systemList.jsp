@@ -19,7 +19,7 @@
 			
 		</div>
 		<div style="text-align: center;">
-			<table border="1px" width="80%">
+			<table id="tab" border="1px" width="80%">
 				<tr id="one">
 					<td>环境名称</td><td>域名</td><td>更新时间</td><td>描述</td><td>操作</td>
 				</tr>
@@ -51,7 +51,7 @@
 			$("#one~tr").remove();
 			//alert(obj);
 			for(var i in obj){
-				$("#one").after("<tr><td>"+obj[i].systemname+"</td>"+
+				$("#tab").append("<tr><td>"+obj[i].systemname+"</td>"+
 				"<td>"+obj[i].urlname+"</td>"+
 				"<td>"+obj[i].updatetime+"</td>"+
 				"<td>"+obj[i].des+"</td>"+

@@ -1,16 +1,27 @@
 package entity;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+
+
+
 @Component("plan")
 public class plan {
 	public int id;//
 	public String pname;//计划名称',
 	public String des;//描述',
 	public int createid;//创建id'
-	public Timestamp createtime;//创建时间',
-	public Timestamp updatetime;//更新时间
+	public Date createtime;
+//	public Timestamp createtime;//创建时间',
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone=" GMT+8")
+	public Date updatetime;
+//	public Timestamp updatetime;//更新时间
 	public int sysid;//环境变量id
 	public int getId() {
 		return id;
@@ -36,22 +47,22 @@ public class plan {
 	public void setCreateid(int createid) {
 		this.createid = createid;
 	}
-	public Timestamp getCreatetime() {
-		return createtime;
-	}
-	public void setCreatetime(Timestamp createtime) {
-		this.createtime = createtime;
-	}
-	public Timestamp getUpdatetime() {
-		return updatetime;
-	}
-	public void setUpdatetime(Timestamp updatetime) {
-		this.updatetime = updatetime;
-	}
 	public int getSysid() {
 		return sysid;
 	}
 	public void setSysid(int sysid) {
 		this.sysid = sysid;
+	}
+	public Date getCreatetime() {
+		return createtime;
+	}
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
 	}
 }

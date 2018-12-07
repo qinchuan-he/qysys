@@ -15,13 +15,13 @@
 		输入接口名称<input><input type="button" value="查询">&nbsp;&emsp;<a href="addinterface.action"><button>新增</button></a>
 	</div>
 	<div>
-		<table border="1px" width="80%">
+		<table border="1px" width="100%" style="table-layout: fixed;">
 			<tr id="one">
 				<td>接口名称</td><td>URL</td><td>请求方式</td><td>描述</td><td>操作</td>
 			</tr>
 			<c:forEach items="${list }" var="inter">
 				<tr>
-				<td>${inter.inname }</td><td>${inter.url }</td><td>${inter.method }</td><td>${inter.des }</td>
+				<td>${inter.inname }</td><td style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;">${inter.url }</td><td>${inter.method }</td><td>${inter.des }</td>
 					<td><a href="modifyinterselect.action?id=${inter.id }">修改</a>&emsp;<a href="deleteinter.action?id=${inter.id }">删除</a>
 						&emsp;<a href="testinter.action?id=${inter.id }">执行</a>
 					</td>					

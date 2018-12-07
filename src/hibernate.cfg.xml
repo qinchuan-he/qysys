@@ -36,5 +36,8 @@
 <mapping resource="entity/plan.hbm.xml"/>
 <mapping resource="entity/plug.hbm.xml"/>
 <mapping resource="entity/sysurl.hbm.xml"/>
+<mapping resource="entity/plandetail.hbm.xml"/>
+<mapping resource="entity/psys.hbm.xml"/>
+<mapping resource="entity/responsedetail.hbm.xml"/>
 </session-factory>
 </hibernate-configuration>

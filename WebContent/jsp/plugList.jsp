@@ -19,7 +19,7 @@
 		<a href="addPlug.jsp"><button>新增</button></a>
 	</div>
 	<div>
-		<table border="1px" width="80%">
+		<table id="tab" border="1px" width="80%">
 			<tr id="one">
 				<td>名字</td><td>描述</td><td>更新时间</td><td>操作</td>
 			</tr>
@@ -50,7 +50,7 @@
 				//data: {"name":data},
 				success:function(plug){
 					for(var i in plug){
-						$("#one").after("<tr><td>"+plug[i].plname+"</td><td>"+plug[i].pldes+"</td><td>"+plug[i].updatetime+"</td><td>"
+						$("#tab").append("<tr><td>"+plug[i].plname+"</td><td>"+plug[i].pldes+"</td><td>"+plug[i].updatetime+"</td><td>"
 						+"<a href="+"describeplug.action?id="+plug[i].id+">详情</a>"
 						+"<a href="+"modifyselectplug.action?id="+plug[i].id+">修改</a>"
 						+"<a href="+"deleteplug.action?id="+plug[i].id+">删除</a>"
