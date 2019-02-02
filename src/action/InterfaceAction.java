@@ -2,14 +2,18 @@ package action;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,6 +46,115 @@ public class InterfaceAction {
 		model.addAttribute("list", list);
 		return "interfaceList";
 	}
+	
+	//vue改造查
+	//询接口列表，分页
+	@ResponseBody
+	@RequestMapping(value="/html/interface/InterfaceList.action")
+	public Map<String, Object> interfaceList(HttpServletRequest req,ModelMap model){
+		int page=Integer.parseInt(req.getParameter("page"));
+		int limit=Integer.parseInt(req.getParameter("limit"));
+		List<ininterface> list=interimpl.inList(page-1,limit);
+		int count=interimpl.cointId();
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("list", list);
+		map.put("total", count);
+		map.put("status", 1);
+		map.put("code", 20000);
+		return map;
+	}
+	//vue改造，接口名查询
+	@ResponseBody
+	@RequestMapping(value="/html/interface/InterfaceSelect.action",method=RequestMethod.GET)
+	public Map<String, Object> interfaceSelect(HttpServletRequest req,ModelMap model){
+		String name=req.getParameter("title");
+		int page=Integer.parseInt(req.getParameter("page"));
+		int limit=Integer.parseInt(req.getParameter("limit"));
+		int count=interimpl.cointId(name);
+		Map<String, Object> map=new HashMap<String, Object>();
+		List<ininterface> list=interimpl.inSelect(page-1, limit, name);
+		map.put("list", list);
+		map.put("total", count);
+		map.put("code", 20000);
+		map.put("status", 1);
+		return map;
+	}
+	//vue改造，新增接口部分
+	@ResponseBody
+	@RequestMapping(value="/html/interface/InterfaceAdd.action",method=RequestMethod.POST)
+	public Map<String, Object> selectAll1(@RequestBody String req,ModelMap model){
+		JSONObject json=JSONObject.fromObject(req);
+		Timestamp time=new Timestamp(new Date().getTime());
+		Map<String, Object> map=new HashMap<String, Object>();
+//		String checker=json.getString("checker");
+		ininter.setInname(json.getString("inname"));
+		ininter.setUrl(json.getString("url"));
+		ininter.setMethod(json.getString("method"));
+		ininter.setDes(json.getString("des"));
+		ininter.setParam(json.getString("param"));
+		ininter.setSysid(Integer.parseInt(json.getString("sysid")));
+		ininter.setCreatetime(time);
+		ininter.setUpdatetime(time);
+		ininter.setChecker("");
+		String re=interimpl.addIn(ininter);
+		map.put("result", re);
+		if(re.equals("新增成功")){
+			map.put("status", 1);
+		}else{
+			map.put("status", 0);
+		}
+		map.put("code", 20000);		
+		return map;
+	}
+	//vue改造，接口详情
+	@ResponseBody
+	@RequestMapping(value="/html/interface/InterfaceDetails.action",method=RequestMethod.GET)
+	public Map<String, Object> interfaceDetails(HttpServletRequest req,ModelMap model){
+		int id=Integer.parseInt(req.getParameter("id"));
+		Map<String, Object> result=interimpl.selectquery(id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("status", 1);
+		map.put("code", 20000);
+		map.put("result", result);
+		
+		return map;
+	}
+	//vue改造，修改接口
+	@ResponseBody
+	@RequestMapping(value="/html/interface/InterfaceModify.action",method=RequestMethod.POST)
+	public Map<String, Object> interfaceModify(@RequestBody String req,ModelMap model){
+		JSONObject json=JSONObject.fromObject(req);
+		Timestamp time=new Timestamp(new Date().getTime());
+//		String check=json.getString("check");
+		ininter.setId(json.getInt("id"));
+		ininter.setInname(json.getString("inname"));
+		ininter.setUrl(json.getString("url"));
+		ininter.setMethod(json.getString("method"));
+		ininter.setDes(json.getString("des"));
+		ininter.setParam(json.getString("param"));
+		ininter.setChecker("");
+		ininter.setUpdatetime(time);
+		ininter.setSysid(json.getInt("sysid"));		
+		String result=interimpl.modifyIn(ininter);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("result", result);
+		map.put("ccode", 20000);
+		map.put("status", 1);
+		return map;
+	}
+	//vue改造，删除接口
+	@ResponseBody
+	@RequestMapping(value="/html/interface/InterfaceDelete.action",method=RequestMethod.GET)
+	public Map<String, Object> interafaceDelete(HttpServletRequest req,ModelMap model){
+		int id=Integer.parseInt(req.getParameter("id"));
+		String result=interimpl.deleteIn(id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("result", result);
+		map.put("code", 20000);
+		map.put("status", 1);
+		return map;
+	}
+	
 	
 	//查询出环境列表，进入新增页面作为下拉框
 	@RequestMapping(value="/jsp/addinterface.action")

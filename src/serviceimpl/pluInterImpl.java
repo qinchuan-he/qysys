@@ -1,6 +1,7 @@
 package serviceimpl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -192,6 +193,104 @@ public class pluInterImpl implements plugInter{
 		}else{
 			return false;
 		}
+	}
+
+	@Override
+	public List<plug> selectPlugAll(int page, int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from plug limit ?,?";
+		NativeQuery<plug> query=session.createNativeQuery(str, plug.class);
+		query.setParameter(1, page*limit).setParameter(2, limit);
+		List<plug> list=query.getResultList();
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from plug";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public int count(String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from plug where plname like ?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str).setParameter(1, "%"+name+"%");
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public List<plug> selectPlugName(int page, int limit, String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from plug p where p.plname like ? limit ?,?";
+		NativeQuery<plug> query=session.createNativeQuery(str, plug.class);
+		query.setParameter(1, "%"+name+"%")
+				.setParameter(2, page*limit)
+				.setParameter(3, limit);
+		List<plug> list=query.getResultList();
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public List<ininterface> selectInter(String name, int id, int page,
+			int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from ininterface where id not in(select f.id from inplug p,ininterface f where p.inid=f.id and p.pid=?) and inname like ? limit ?,? ";
+		NativeQuery<ininterface> query=session.createNativeQuery(str, ininterface.class);
+		query.setParameter(1, id)
+				.setParameter(2, "%"+name+"%")
+				.setParameter(3, page*limit)
+				.setParameter(4, limit);
+		List<ininterface> list=query.getResultList();
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public int count(String name, int id) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from ininterface where id not in(select f.id from inplug p,ininterface f where p.inid=f.id and p.pid=?) and inname like ? ";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);
+		query.setParameter(1, id)
+				.setParameter(2, "%"+name+"%");
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectInterPlugVue(int id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -11,6 +11,10 @@ import entity.ininterface;
 public interface Inter {
 
 		public List<ininterface> inList();//查询接口，显示全部，不需要参数
+		public List<ininterface> inList(int page,int limit);//查询接口，显示全部，分页
+		public List<ininterface> inSelect(int page,int limit,String name);//通过名字查询接口，显示全部，分页
+		public int cointId();//查询总计
+		public int cointId(String name);//查询
 		public List<ininterface> selectIdList(int id);//查询接口，通过id查询
 		public String addIn(ininterface in);//新增接口，传入一个对象
 		public String modifyIn(ininterface in);//修改接口，传入对象

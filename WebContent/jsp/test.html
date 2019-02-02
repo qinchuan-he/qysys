@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+    <meta charset="UTF-8">
+        
+        <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+        
+    </head>
+    <body>
+	<div id="onetest">
+		<div v-for="(item,index) in plist">
+			<p>{{item.name}}</p><p>{{item.des}}</p><p>{{item.updatetime}}</p><p>详情</p><p>成功</p>
+		</div> 
+		<table id="tab" border="1px" width="80%">
+		<tr id="one"><td>计划名称</td><td>描述</td><td>修改时间</td><td>操作</td><td>执行结果</td></tr>
+		<!-- 
+		<tr v-for="(item,index) in plist">
+			<td>{{item.name}}</td><td>{{item.des}}</td><td>{{item.updatetime}}</td><td>详情</td><td>成功</td>
+		</tr>  -->
+		</table>
+	</div>
+
+
+<script type="text/javascript">
+window.onload = function () {
+	 new Vue({
+		el: '#onetest',
+		date: {
+				plist: []
+			},
+		//	created: function(){
+			//	this.getList()
+			//	},
+				methods:{
+				getList: function(){
+					var url="planListVue.action"
+						this.$http.get(url).then(function(result){
+						//	 list= result.body
+
+						//	for(var l in list){
+						//		 document.write(list[l].pname);
+						//		}  
+							this.plist = result.data;
+							//alert(list);
+							})
+
+					}
+
+				}
+
+	})
+}
+
+</script>
+</body>
+</html>

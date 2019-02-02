@@ -6,7 +6,7 @@
     <class name="entity.inplug" table="INPLUG">
         <id name="id" type="int">
             <column name="ID" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
         <property name="inid" type="int">
             <column name="INID" />

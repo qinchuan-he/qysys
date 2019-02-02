@@ -94,7 +94,20 @@ public class SysInterface implements Sys{
 		session.close();
 		return "删除成功";
 	}
+	
 
+	@Override
+	public int count(String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from sysurl s where s.systemname like ?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str).setParameter(1, "%"+name+"%");
+		String tran=query.getSingleResult().toString();
+		int count=Integer.parseInt(tran);
+		return count;
+	}
 	@Override
 	public List<sysurl> selectNameList(String name) {
 		// TODO Auto-generated method stub
@@ -124,6 +137,50 @@ public class SysInterface implements Sys{
 		session.close();
 		return list;
 	}
+
+	@Override
+	public List<sysurl> systemList(int page, int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String sql="select * from sysurl LIMIT ?,?";
+		NativeQuery<sysurl> query=session.createNativeQuery(sql, sysurl.class).setParameter(1, page*limit).setParameter(2, limit);
+		List<sysurl> list=query.getResultList();
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public int countId() {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String sql="select count(id) from sysurl";
+		NativeQuery<Object> query=session.createNativeQuery(sql);
+		Object obj=query.getSingleResult();
+		int countid=Integer.valueOf(String.valueOf(obj));
+		tr.commit();
+		session.close();
+		return countid;
+	}
+
+	@Override
+	public List<sysurl> selectNameList(String name, int page, int limit) {
+		// TODO Auto-generated method stub
+		System.out.println("--------------------"+name);
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from sysurl s where s.systemname like ? limit ?,?";
+		NativeQuery<sysurl> query=session.createNativeQuery(str, sysurl.class);
+		query.setParameter(1, "%"+name+"%").setParameter(2, page*limit).setParameter(3, limit);
+		List<sysurl> list=query.getResultList();
+		tr.commit();
+		session.close();
+		System.out.println(list);
+		return list;
+	}
+
 
 
 

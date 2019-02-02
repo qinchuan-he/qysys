@@ -11,18 +11,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.enterprise.inject.Model;
 import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import entity.ininterface;
 import entity.plan;
 import entity.plandetail;
@@ -65,6 +70,200 @@ public class planAction {
 		model.addAttribute("list", list);
 		return "planList";
 	}
+	//vue改造,展示计划列表，分页
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanList.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanList(HttpServletRequest req){
+		int page=Integer.parseInt(req.getParameter("page"));		
+		int limit=Integer.parseInt(req.getParameter("limit"));
+		List<Map<String, Object>> list=pimp.list(page-1, limit);
+		int count=pimp.count();
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("total", count);
+		map.put("list", list);
+		return map;
+	}
+	//vue改造，根据计划名查询,分页
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanSearchName.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanSearchName(HttpServletRequest req){
+		String name=req.getParameter("title");
+		if(name==null){
+			name="";
+		}
+		int page=Integer.parseInt(req.getParameter("page"));
+		int limit=Integer.parseInt(req.getParameter("limit"));
+		List<Map<String, Object>> list=pimp.selectName(name, page-1, limit);
+		int count=pimp.count(name);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("total", count);
+		map.put("list", list);
+		return map;
+	}
+	//vue改造，通过id查询计划详情,不包含接口和组件
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanSearchId.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanSearchId(HttpServletRequest req){
+		int id=Integer.parseInt(req.getParameter("id"));
+		Map<String, Object> result=pimp.selectId(id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("list", result);
+		return map;
+	}
+	//vue改造，，通过id查询计划详情,含接口和组件,分页
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanAllSearchId.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanAllSearchId(HttpServletRequest req){
+		int id=Integer.parseInt(req.getParameter("id"));
+		int page=Integer.parseInt(req.getParameter("planpage"));
+		int limit=Integer.parseInt(req.getParameter("planlimit"));
+		List<Map<String, Object>> list=pimp.planDetail(id,page-1,limit);
+		int count=pimp.count(id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("list", list);
+		map.put("ptotal", count);
+		return map;
+	}
+	//vue改造,新增计划
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanAdd.action",method=RequestMethod.POST)
+	public Map<String, Object> PlanAdd(@RequestBody String req){
+		JSONObject json=JSONObject.fromObject(req);
+		Date da=new Date();
+		p.setCreateid(0);
+		p.setPname(json.getString("pname"));
+		p.setDes(json.getString("des"));
+		p.setSysid(json.getInt("sysid"));
+		p.setCreatetime(da);
+		p.setUpdatetime(da);
+		String str=pimp.addPlan(p);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("result", str);
+		return map;
+	}
+	//vue改造，修改计划
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanModify.action",method=RequestMethod.POST)
+	public Map<String, Object> PlanModify(@RequestBody String req){
+		JSONObject json=JSONObject.fromObject(req);
+		Date da=new Date();
+		p.setId(json.getInt("id"));
+		p.setPname(json.getString("pname"));
+		p.setDes(json.getString("des"));
+		p.setUpdatetime(da);
+		p.setSysid(json.getInt("sysid"));
+		String str=pimp.modifyPlan(p);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("result", str);
+		return map;
+	}
+	//vue改造，删除计划
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanDelete.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanDelete(HttpServletRequest req){
+		int id=Integer.parseInt(req.getParameter("id"));
+		String str=pimp.deletePlan(id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("result", str);
+		return map;
+	}
+	//vue改造，计划详情页查询接口，分页,后端判断传入为null
+	@ResponseBody
+	@RequestMapping(value="/html/plan/planSearahOtherIn.action",method=RequestMethod.GET)
+	public Map<String, Object> planSearahOtherIn(HttpServletRequest req){
+		int id=Integer.parseInt(req.getParameter("id"));
+		String inname=req.getParameter("title");
+		int page=Integer.parseInt(req.getParameter("inpage"));
+		int limit=Integer.parseInt(req.getParameter("inlimit"));
+		if(inname==null){
+			inname="";
+		}
+		List<Map<String, Object>> list=pimp.selectInterName(inname, id,page-1,limit);
+		int count=pimp.countInterface(inname, id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("list", list);
+		map.put("intotal", count);
+		return map;
+	}
+	//vue改造，计划详情页查询组件，分页,后端判断传入为null
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanSearchOthaerPlug.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanSearchOthaerPlug(HttpServletRequest req){
+		int id=Integer.parseInt(req.getParameter("id"));
+		String plname=req.getParameter("title");
+		int page=Integer.parseInt(req.getParameter("plugpage"));
+		int limit=Integer.parseInt(req.getParameter("pluglimit"));
+		if(plname==null){
+			plname="";
+		}
+		List<Map<String, Object>> list=pimp.selectPlugName(plname, id,page-1,limit);
+		int count=pimp.countPlug(plname, id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("list", list);
+		map.put("pltotal", count);
+		return map;
+	}
+	//vue改造，为计划添加接口和组件，根据type的值来判断
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanAddOther.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanAddOther(HttpServletRequest req){
+		int pid=Integer.parseInt(req.getParameter("pid"));
+		int apiid=Integer.parseInt(req.getParameter("apiid"));
+		int type=Integer.parseInt(req.getParameter("type"));
+		boolean check=pimp.checkPlan(pid, apiid, type);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		if(check){
+			int max=pimp.maxNum(pid)+1;
+			pd.setPid(pid);
+			pd.setApiid(apiid);
+			pd.setType(type);
+			pd.setNum(max);
+			String str=pimp.plandetailAdd(pd);
+			map.put("result", str);
+			if(str.equals("新增成功")){
+				map.put("status", 1);				
+			}else{
+				map.put("status", 0);
+			}
+		}else{
+			map.put("status", 0);
+		}
+		
+		return map;
+	}
+	//vue改造，删除接口和组件，直接删除详情表中的id
+	@ResponseBody
+	@RequestMapping(value="/html/plan/PlanDeleteOther.action",method=RequestMethod.GET)
+	public Map<String, Object> PlanDeleteOther(HttpServletRequest req){
+		int id=Integer.parseInt(req.getParameter("id"));
+		String str=pimp.deleteDetail(id);
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("code", 20000);
+		map.put("status", 1);
+		map.put("result", str);
+		return map;
+	}
+	
+
 	
 	@RequestMapping(value="/jsp/plandetail.action",method=RequestMethod.GET)
 	public String detailPlan(HttpServletRequest req,ModelMap model){
@@ -76,6 +275,9 @@ public class planAction {
 		model.addAttribute("planid", id);
 		return "plandetailList";
 	}
+
+	
+	
 
 	@RequestMapping(value="/jsp/modifyselect.action",method=RequestMethod.GET)
 	public String modifySelectPlan(HttpServletRequest req,ModelMap model){

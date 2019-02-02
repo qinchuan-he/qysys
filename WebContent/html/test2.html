@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+    <meta charset="UTF-8">
+       
+        <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>       
+        <script src="https://cdn.staticfile.org/vue-router/2.7.0/vue-router.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>  
+        <script src="router.js"></script>
+        
+            
+    </head>
+  <body>
+    <div id="plan">
+        <h1>q12341234</h1>
+    		<table id="tab" border="1px" width="80%">
+		<tr id="one"><td>计划名称</td><td>描述</td><td>修改时间</td><td>操作</td><td>{{msg}}</td></tr>
+		
+		<tr v-for="(item,index) in list">
+			<td>{{item.name}}</td><td>{{item.des}}</td><td>{{item.type}}</td><td>{{item.num}}</td>
+			<td><a :id="item.id" @click='show1(item.id)' href="#">详情</a></td>
+        </tr>
+		</table>
+    </div>
+<script type="text/javascript">
+
+new Vue({
+    el: '#plan',
+    router,
+    data: {
+      msg: 'hello',
+      //pid: this.$route.params.id
+      list: []
+     },
+    // created: function(){
+    //  this.showdetails();
+    //  },
+  
+   // methods: {
+    created(){
+      this.showdetails();
+    },
+    methods: {
+        showdetails(){
+            var that=this;
+            var url="plandetailVue.action?id=1"
+            this.$http.get(url).then(function(response){
+                that.list=response.data
+                alert(that.$route.params.id);
+            })
+        }
+    },
+    
+})
+</script>
+</body>
+</html>

@@ -6,7 +6,7 @@
     <class name="entity.plandetail" table="PLANDETAIL">
         <id name="id" type="int">
             <column name="ID" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
         <property name="pid" type="int">
             <column name="PID" />

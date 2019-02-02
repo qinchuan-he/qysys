@@ -140,6 +140,66 @@ public class InInterfaceimpl implements Inter{
 		return map;
 	}
 
+	@Override
+	public List<ininterface> inList(int page, int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from ininterface limit ?,?";
+		NativeQuery<ininterface> query=session.createNativeQuery(str, ininterface.class).setParameter(1, page*limit).setParameter(2, limit);
+		List<ininterface> list=query.getResultList();
+		tr.commit();
+		session.close();		
+		return list;
+		
+	}
+
+	@Override
+	public int cointId() {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String sql="select count(1) from ininterface";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(sql);
+		String transfer=query.getSingleResult().toString();
+		int count=Integer.parseInt(transfer);
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public int cointId(String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String sql="select count(1) from ininterface where inname like ?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(sql).setParameter(1, "%"+name+"%");
+		String transfer=query.getSingleResult().toString();
+		int count=Integer.parseInt(transfer);
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public List<ininterface> inSelect(int page, int limit, String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from ininterface where inname like ? limit ?,?";
+		NativeQuery<ininterface> query=session.createNativeQuery(str, ininterface.class);
+		query.setParameter(1, "%"+name+"%")
+				.setParameter(2, page*limit)
+				.setParameter(3, limit);
+		List<ininterface> list=query.getResultList();
+		tr.commit();
+		session.close();		
+		return list;
+	}
+
 }
 
 

@@ -39,5 +39,6 @@
 <mapping resource="entity/plandetail.hbm.xml"/>
 <mapping resource="entity/psys.hbm.xml"/>
 <mapping resource="entity/responsedetail.hbm.xml"/>
+<mapping resource="entity/user1.hbm.xml"/>
 </session-factory>
 </hibernate-configuration>

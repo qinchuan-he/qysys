@@ -52,6 +52,7 @@ public class planImpl implements planinter{
 			map.put("id", list[0]);
 			map.put("pname", list[1]);
 			map.put("des", list[2]);
+			map.put("createid", list[3]);
 			map.put("updatetime", list[5]);
 			map.put("sysid", list[6]);
 			map.put("systemname", list[7]);
@@ -103,7 +104,7 @@ public class planImpl implements planinter{
 		query.executeUpdate();
 		tr.commit();
 		session.close();
-		return null;
+		return "更新成功";
 	}
 
 	@Override
@@ -142,7 +143,7 @@ public class planImpl implements planinter{
 		// TODO Auto-generated method stub
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
-		String str="delete from plandetail where  pid=?";
+		String str="delete from plan where id=?";
 		NativeQuery<plandetail> query=session.createNativeQuery(str, plandetail.class);
 		query.setParameter(1, id);
 		query.executeUpdate();
@@ -260,7 +261,7 @@ public class planImpl implements planinter{
 		Session session=sessionfactory.openSession();
 		Transaction tr=session.beginTransaction();
 //		String str="select  IFNULL(max(num),0) from plandetail where pid=?";//这里要给为空默认值，不然为空会报空指针异常
-		String str="select max(num) from plandetail where pid=?";//这种直接走object类型，排队类型为非空，再转int
+		String str="select max(num) from plandetail where pid=?";//这种直接走object类型，排队类型为非空，再转int(object需要先转String再转int)
 		@SuppressWarnings("unchecked")
 		NativeQuery<Object> query=session.createNativeQuery(str);
 		query.setParameter(1, id);
@@ -299,6 +300,297 @@ public class planImpl implements planinter{
 		session.close();
 		return list;
 	}
+
+	@Override
+	public List<Map<String, Object>> list(int page, int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select p.id,p.pname,p.des,p.sysid,s.systemname from plan p,sysurl s where p.sysid=s.id limit ?,?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object[]> query=session.createNativeQuery(str).setParameter(1, page*limit).setParameter(2, limit);
+		List<Object[]> obj=query.getResultList();
+		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		tr.commit();
+		session.close();
+		for(Object[] o:obj){
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("id", o[0]);
+			map.put("pname", o[1]);
+			map.put("des", o[2]);
+			map.put("sysid", o[3]);
+			map.put("systemname", o[4]);
+			list.add(map);
+		}
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectName(String name, int page, int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select p.id,p.pname,p.des,p.sysid,s.systemname from plan p,sysurl s where p.sysid=s.id and p.pname like ? limit ?,?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object[]> query=session.createNativeQuery(str);
+			query.setParameter(1, "%"+name+"%")
+					.setParameter(2, page*limit)
+					.setParameter(3, limit);
+		List<Object[]> obj=query.getResultList();
+		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		for(Object[] o:obj){
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("id", o[0]);
+			map.put("pname", o[1]);
+			map.put("des", o[2]);
+			map.put("sysid", o[3]);
+			map.put("systemname", o[4]);
+			list.add(map);
+		}
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from plan";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);	
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public int count(String name) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from plan where pname like ?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);
+			query.setParameter(1, "%"+name+"%");
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public int count(int pid) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from (select  d.id from plandetail d,plug pl where pl.id=d.apiid and type=1 and d.pid=? "
+				+ "UNION all "
+				+ "select d.id from plandetail d,ininterface ip where  ip.id=d.apiid and type=0 and d.pid=?) d";	
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);
+		query.setParameter(1, pid)
+				.setParameter(2, pid);
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public int countInterface(String name, int planid) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from ininterface where id not in(select apiid from plandetail where pid=? and type=0)and inname like ?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);
+		query.setParameter(1, planid)
+				.setParameter(2, "%"+name+"%");
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public int countPlug(String name, int planid) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select count(1) from plug where id not in(select pd.apiid from plandetail pd where  type=1 and pid=?) and plname like ?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object> query=session.createNativeQuery(str);
+		query.setParameter(1, planid)
+				.setParameter(2, "%"+name+"%");
+		int count=Integer.parseInt(query.getSingleResult().toString());
+		tr.commit();
+		session.close();
+		return count;
+	}
+
+	@Override
+	public List<Map<String, Object>> planDetail(int id, int page, int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from (select d.id id, pl.id apiid,pl.plname pname,pl.pldes  des,d.type,d.num num from plandetail d,plug pl "
+				+ "where  pl.id=d.apiid and type=1 and d.pid=? UNION all select d.id id, ip.id,ip.inname ,ip.des ,d.type,d.num  "
+				+ " from plandetail d,ininterface ip where  ip.id=d.apiid and type=0 and d.pid=?) d ORDER BY d.num limit ?,?";	
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object[]> query=session.createNativeQuery(str);
+		query.setParameter(1, id)
+				.setParameter(2, id)
+				.setParameter(3, page*limit)
+				.setParameter(4, limit);
+		List<Object[]> list1=query.getResultList();	
+		List<Map<String, Object>> list2=new ArrayList<Map<String,Object>>();
+			for(Object[] o:list1){
+				Map<String, Object> map=new HashMap<String, Object>();
+				map.put("id", o[0]);
+				map.put("apiid", o[1]);
+				map.put("name", o[2]);
+				map.put("des", o[3]);
+				map.put("type", o[4]);
+				map.put("num", o[5]);
+				list2.add(map);
+			}	
+		tr.commit();
+		session.close();
+//		System.out.println(list2);
+		return list2;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectInterName(String name, int planid, int page,
+			int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select id, inname from ininterface where id not in(select apiid from plandetail where pid=? and type=0)and inname like ? limit ?,?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object[]> query=session.createNativeQuery(str);
+		query.setParameter(1, planid)
+				.setParameter(2, "%"+name+"%")
+				.setParameter(3, page*limit)
+				.setParameter(4, limit);
+		List<Object[]> obj=query.getResultList();
+		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		for(Object[] o:obj){
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("apiid", o[0]);
+			map.put("name", o[1]);
+			map.put("type", 0);
+			list.add(map);
+		}
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectPlugName(String name, int planid, int page,
+			int limit) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select id ,plname from plug where id not in(select pd.apiid from plandetail pd where  type=1 and pid=?) and plname like ? limit ?,?";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object[]> query=session.createNativeQuery(str);
+		query.setParameter(1, planid)
+				.setParameter(2, "%"+name+"%")
+				.setParameter(3, page*limit)
+				.setParameter(4, limit);
+		List<Object[]> obj=query.getResultList();
+		 List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		 for(Object[] o:obj){
+			 Map<String, Object> map=new HashMap<String, Object>();
+			 map.put("apiid", o[0]);
+			 map.put("name", o[1]);
+			 map.put("type", 1);
+			 list.add(map);
+		 }
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public String deleteDetail(int id) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="delete from plandetail where  id=?";
+		NativeQuery<plandetail> query=session.createNativeQuery(str, plandetail.class);
+		query.setParameter(1, id);
+		query.executeUpdate();
+		tr.commit();
+		session.close();
+		return "删除成功";
+	}
+
+	@Override
+	public String updateStatus(int pid, int status) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="update plan p set p.createid=? where p.Id=?";
+		NativeQuery<plan> query=session.createNativeQuery(str, plan.class).setParameter(1, status).setParameter(2, pid);
+		query.executeUpdate();
+		tr.commit();
+		session.close();
+		if(status==1){
+			return "执行状态更新成功";
+		}else{
+			return "就绪状态更新成功";
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> showPlanAll(int pid) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="select * from "
+				+ "((select pl.id i,d.num ,infa.* from plandetail d,inplug pl,ininterface infa where  pl.pid=d.apiid and pl.inid=infa.id and d.type=1 and d.pid=?)"
+				+ " UNION all "
+				+ "(select 1 i,d.num ,ip.*   from plandetail d,ininterface ip where  ip.id=d.apiid and type=0 and d.pid=?)) d ORDER BY d.num,d.i";
+		@SuppressWarnings("unchecked")
+		NativeQuery<Object[]> query=session.createNativeQuery(str);
+		query.setParameter(1, pid).setParameter(2, pid);
+		List<Object[]> obj=query.getResultList();
+		List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+		for(Object[] o:obj){
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("inid", o[2]);
+			map.put("url", o[4]);
+			map.put("method", o[5]);
+			map.put("param", o[7]);
+			map.put("check", o[8]);
+			list.add(map);
+		}
+		tr.commit();
+		session.close();
+		return list;
+	}
+
+	@Override
+	public String showSystemUrl(int pid) {
+		// TODO Auto-generated method stub
+		Session session=sessionfactory.openSession();
+		Transaction tr=session.beginTransaction();
+		String str="SELECT s.urlname from plan p,sysurl s where p.sysid=s.id and p.id=?";
+		NativeQuery<Object> query=session.createNativeQuery(str).setParameter(1, pid);
+		String url=query.getSingleResult().toString();	
+		tr.commit();
+		session.close();
+		return url;
+	}
+
+
+
 
 	
 
